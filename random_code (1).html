@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Random Code</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0a0a0a;
+    font-family: 'Courier New', monospace;
+  }
+  .container {
+    text-align: center;
+  }
+  .label {
+    color: #888;
+    letter-spacing: 4px;
+    font-size: 14px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+  .code {
+    font-size: 72px;
+    font-weight: bold;
+    color: #ffb347;
+    text-shadow: 0 0 20px rgba(255, 179, 71, 0.6), 0 0 40px rgba(255, 179, 71, 0.3);
+    letter-spacing: 12px;
+    animation: flicker 3s infinite;
+  }
+  @keyframes flicker {
+    0%, 100% { opacity: 1; }
+    92% { opacity: 1; }
+    93% { opacity: 0.7; }
+    94% { opacity: 1; }
+  }
+  .refresh {
+    margin-top: 30px;
+    padding: 10px 24px;
+    background: transparent;
+    border: 1px solid #ffb347;
+    color: #ffb347;
+    font-family: inherit;
+    letter-spacing: 2px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.2s;
+  }
+  .refresh:hover {
+    background: #ffb347;
+    color: #0a0a0a;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="label">Enter Code</div>
+    <div class="code" id="codeDisplay">0000</div>
+    <button class="refresh" onclick="generateCode()">NEW CODE</button>
+  </div>
+
+<script>
+  // غيّر اللينك ده بلينك الـ Firebase Realtime Database بتاعك
+  const FIREBASE_URL = "https://YOUR-PROJECT-default-rtdb.firebaseio.com/currentCode.json";
+
+  function generateCode() {
+    // رقم عشوائي حر من 0000 لـ 9999 (مش محدود بأرقام معينة)
+    const randomNumber = Math.floor(Math.random() * 10000);
+    const randomCode = String(randomNumber).padStart(4, "0");
+
+    document.getElementById("codeDisplay").textContent = randomCode;
+
+    // ابعت الرقم لـ Firebase عشان أي حاجة تانية (زي اللعبة) تقدر تقراه
+    fetch(FIREBASE_URL, {
+      method: "PUT",
+      body: JSON.stringify(randomCode)
+    }).catch(err => console.error("Firebase update failed:", err));
+  }
+
+  // generate a code as soon as the page loads / is entered
+  generateCode();
+</script>
+</body>
+</html>
